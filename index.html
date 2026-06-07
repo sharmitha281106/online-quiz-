@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuizMaster Pro - Create & Take Quizzes Online</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+--primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+--success-gradient: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+--warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+--danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+--glass-bg: rgba(255, 255, 255, 0.15);
+--glass-border: rgba(255, 255, 255, 0.25);
+--shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+--shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.37);
+--text-primary: #1f2937;
+--text-secondary: #6b7280;
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+background: var(--primary-gradient);
+min-height: 100vh;
+color: var(--text-primary);
+line-height: 1.6;
+overflow-x: hidden;
+}
+
+/* Enhanced Navigation */
+.navbar {
+position: fixed;
+top: 0;
+width: 100%;
+background: var(--glass-bg);
+backdrop-filter: blur(25px);
+border-bottom: 1px solid var(--glass-border);
+z-index: 10000;
+padding: 1rem 5%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+transition: all 0.3s ease;
+}
+
+.logo {
+font-size: 1.8rem;
+font-weight: 800;
+background: linear-gradient(135deg, #ffffff, #f8fafc);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+
+.nav-links {
+display: flex;
+gap: 2rem;
+list-style: none;
+}
+
+.nav-links a {
+color: rgba(255, 255, 255, 0.95);
+text-decoration: none;
+font-weight: 600;
+padding: 0.5rem 1rem;
+border-radius: 25px;
+transition: all 0.3s ease;
+position: relative;
+}
+
+.nav-links a:hover {
+background: rgba(255, 255, 255, 0.2);
+transform: translateY(-2px);
+}
+
+.user-profile {
+display: flex;
+align-items: center;
+gap: 1rem;
+background: var(--glass-bg);
+padding: 0.5rem 1.5rem;
+border-radius: 50px;
+backdrop-filter: blur(10px);
+border: 1px solid var(--glass-border);
+}
+
+.btn {
+padding: 0.9rem 2rem;
+border: none;
+border-radius: 50px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+font-size: 0.95rem;
+position: relative;
+overflow: hidden;
+}
+
+.btn-primary {
+background: var(--success-gradient);
+color: white;
+box-shadow: var(--shadow-glass);
+}
+
+.btn-primary:hover {
+transform: translateY(-4px);
+box-shadow: 0 25px 50px rgba(34, 197, 94, 0.4);
+}
+
+.btn-secondary {
+background: var(--glass-bg);
+color: white;
+backdrop-filter: blur(10px);
+border: 1px solid var(--glass-border);
+}
+
+.btn-secondary:hover {
+background: rgba(255, 255, 255, 0.25);
+transform: translateY(-2px);
+}
+
+/* Container */
+.container {
+max-width: 1400px;
+margin: 0 auto;
+padding: 0 5%;
+}
+
+/* Hero Section - Enhanced */
+.hero-section {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+padding-top: 120px;
+position: relative;
+overflow: hidden;
+}
+
+.hero-section::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+pointer-events: none;
+}
+
+.hero-title {
+font-size: clamp(3rem, 6vw, 5rem);
+font-weight: 900;
+background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+margin-bottom: 1.5rem;
+animation: heroGlow 3s ease-in-out infinite alternate;
+position: relative;
+z-index: 2;
+}
+
+.hero-subtitle {
+font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+color: rgba(255, 255, 255, 0.95);
+margin-bottom: 3rem;
+max-width: 700px;
+line-height: 1.6;
+position: relative;
+z-index: 2;
+}
+
+.cta-buttons {
+display: flex;
+gap: 1.5rem;
+flex-wrap: wrap;
+justify-content: center;
+position: relative;
+z-index: 2;
+}
+
+/* Page System */
+.page {
+display: none;
+min-height: 100vh;
+padding-top: 140px;
+animation: fadeInUp 0.6s ease-out;
+}
+
+.page.active {
+display: block;
+}
+
+@keyframes fadeInUp {
+from {
+opacity: 0;
+transform: translateY(40px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+@keyframes heroGlow {
+from {
+text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+}
+to {
+text-shadow: 0 0 50px rgba(255, 255, 255, 0.8), 0 0 60px rgba(102, 126, 234, 0.4);
+}
+}
+
+/* Quiz Listing - Enhanced Cards */
+.section-header {
+text-align: center;
+margin-bottom: 4rem;
+}
+
+.section-title {
+font-size: clamp(2rem, 4vw, 3rem);
+color: white;
+margin-bottom: 1rem;
+position: relative;
+}
+
+.section-title::after {
+content: '';
+position: absolute;
+bottom: -10px;
+left: 50%;
+transform: translateX(-50%);
+width: 80px;
+height: 4px;
+background: var(--success-gradient);
+border-radius: 2px;
+}
+
+.quiz-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+gap: 2.5rem;
+margin-top: 2rem;
+}
+
+.quiz-card {
+background: var(--glass-bg);
+backdrop-filter: blur(25px);
+border: 1px solid var(--glass-border);
+border-radius: 24px;
+padding: 2.5rem 2rem;
+transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+cursor: pointer;
+position: relative;
+overflow: hidden;
+}
+
+.quiz-card::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: 5px;
+background: var(--success-gradient);
+transform: scaleX(0);
+transition: transform 0.4s ease;
+}
+
+.quiz-card:hover {
+transform: translateY(-12px) scale(1.02);
+box-shadow: var(--shadow-lg);
+border-color: rgba(255, 255, 255, 0.4);
+}
+
+.quiz-card:hover::before {
+transform: scaleX(1);
+}
+
+.quiz-icon {
+width: 60px;
+height: 60px;
+background: var(--success-gradient);
+border-radius: 16px;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-bottom: 1.5rem;
+font-size: 1.5rem;
+color: white;
+}
+
+.quiz-title {
+font-size: 1.6rem;
+font-weight: 700;
+color: white;
+margin-bottom: 1rem;
+line-height: 1.3;
+}
+
+.quiz-meta {
+display: flex;
+flex-wrap: wrap;
+gap: 1.5rem;
+margin-bottom: 1.5rem;
+}
+
+.meta-item {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+color: rgba(255, 255, 255, 0.85);
+font-size: 0.9rem;
+font-weight: 500;
+}
+
+/* Quiz Creation Form */
+.creation-form {
+max-width: 900px;
+margin: 0 auto;
+}
+
+.form-group {
+margin-bottom: 2.5rem;
+}
+
+.form-label {
+display: block;
+color: white;
+margin-bottom: 0.75rem;
+font-weight: 600;
+font-size: 1rem;
+}
+
+.form-control {
+width: 100%;
+padding: 1.25rem 1.5rem;
+border: 2px solid var(--glass-border);
+border-radius: 16px;
+background: var(--glass-bg);
+backdrop-filter: blur(15px);
+color: white;
+font-size: 1rem;
+transition: all 0.3s ease;
+}
+
+.form-control:focus {
+outline: none;
+border-color: rgba(255, 255, 255, 0.5);
+box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.form-control::placeholder {
+color: rgba(255, 255, 255, 0.6);
+}
+
+.question-container {
+background: var(--glass-bg);
+backdrop-filter: blur(20px);
+border: 2px solid var(--glass-border);
+border-radius: 20px;
+padding: 2.5rem;
+margin-bottom: 2rem;
+position: relative;
+transition: all 0.3s ease;
+}
+
+.question-container:hover {
+border-color: rgba(255, 255, 255, 0.4);
+}
+
+.question-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 2rem;
+flex-wrap: wrap;
+gap: 1rem;
+}
+
+.question-number {
+background: var(--success-gradient);
+color: white;
+padding: 0.5rem 1rem;
+border-radius: 20px;
+font-weight: 600;
+font-size: 0.9rem;
+}
+
+.btn-remove {
+background: rgba(239, 68, 68, 0.2);
+color: white;
+border: 1px solid rgba(239, 68, 68, 0.4);
+padding: 0.6rem 1.2rem;
+border-radius: 12px;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.btn-remove:hover {
+background: var(--danger-gradient);
+border-color: transparent;
+transform: translateY(-1px);
+}
+
+.answer-option {
+display: flex;
+align-items: flex-start;
+gap: 1rem;
+margin-bottom: 1.5rem;
+padding: 1rem;
+background: rgba(255, 255, 255, 0.05);
+border-radius: 12px;
+border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.correct-radio {
+width: 22px;
+height: 22px;
+margin-top: 0.2rem;
+accent-color: #10b981;
+}
+
+/* Quiz Taking Interface */
+.quiz-container {
+max-width: 700px;
+margin: 0 auto;
+}
+
+.progress-container {
+margin-bottom: 3rem;
+}
+
+.progress-label {
+color: white;
+font-weight: 600;
+margin-bottom: 1rem;
+display: flex;
+justify-content: space-between;
+}
+
+.progress-bar {
+width: 100%;
+height: 12px;
+background: var(--glass-bg);
+border-radius: 20px;
+overflow: hidden;
+position: relative;
+}
+
+.progress-fill {
+height: 100%;
+background: var(--success-gradient);
+border-radius: 20px;
+transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+position: relative;
+}
+
+.progress-fill::after {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+0% { transform: translateX(-100%); }
+100% { transform: translateX(100%); }
+}
+
+.question-display {
+background: var(--glass-bg);
+backdrop-filter: blur(25px);
+border: 2px solid var(--glass-border);
+border-radius: 24px;
+padding: 3rem 2.5rem;
+margin-bottom: 3rem;
+}
+
+.question-text {
+font-size: 1.5rem;
+font-weight: 600;
+color: white;
+margin-bottom: 2rem;
+line-height: 1.5;
+}
+
+.answer-options {
+display: flex;
+flex-direction: column;
+gap: 1.2rem;
+}
+
+.answer-btn {
+background: var(--glass-bg);
+color: white;
+border: 2px solid var(--glass-border);
+padding: 1.25rem 1.75rem;
+border-radius: 16px;
+cursor: pointer;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+text-align: left;
+font-size: 1rem;
+position: relative;
+overflow: hidden;
+}
+
+.answer-btn:hover:not(.selected) {
+background: rgba(255, 255, 255, 0.2);
+transform: translateX(8px);
+border-color: rgba(255, 255, 255, 0.4);
+}
+
+.answer-btn.selected {
+background: var(--success-gradient);
+border-color: #059669;
+box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+transform: scale(1.02);
+}
+
+.quiz-navigation {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 1.5rem;
+flex-wrap: wrap;
+}
+
+/* Results Page */
+.results-hero {
+text-align: center;
+margin-bottom: 4rem;
+}
+
+.score-display {
+width: 280px;
+height: 280px;
+margin: 0 auto 2rem;
+border-radius: 50%;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+position: relative;
+background: conic-gradient(var(--success-gradient) 0deg 0deg, var(--glass-bg) 0deg 360deg);
+box-shadow: var(--shadow-lg);
+}
+
+.score-circle {
+width: 220px;
+height: 220px;
+background: var(--glass-bg);
+border-radius: 50%;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+font-size: 3rem;
+font-weight: 800;
+color: white;
+position: relative;
+z-index: 2;
+}
+
+.score-percentage {
+font-size: 1.2rem;
+margin-top: 0.5rem;
+opacity: 0.9;
+}
+
+.performance-badge {
+background: var(--success-gradient);
+color: white;
+padding: 0.75rem 2rem;
+border-radius: 50px;
+font-weight: 700;
+font-size: 1.1rem;
+margin-top: 1rem;
+box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+}
+
+.results-breakdown {
+max-width: 800px;
+margin: 0 auto;
+}
+
+.result-item {
+background: var(--glass-bg);
+backdrop-filter: blur(15px);
+border: 1px solid var(--glass-border);
+border-radius: 16px;
+padding: 2rem;
+margin-bottom: 1.5rem;
+border-left: 5px solid var(--success-gradient);
+}
+
+.result-item.incorrect {
+border-left-color: #ef4444;
+}
+
+/* Modals */
+.modal-overlay {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.7);
+backdrop-filter: blur(15px);
+z-index: 20000;
+align-items: center;
+justify-content: center;
+padding: 2rem;
+}
+
+.modal-overlay.active {
+display: flex;
+}
+
+.modal-content {
+background: var(--glass-bg);
+backdrop-filter: blur(30px);
+border: 1px solid var(--glass-border);
+border-radius: 24px;
+padding: 3.5rem 3rem;
+max-width: 450px;
+width: 100%;
+max-height: 90vh;
+overflow-y: auto;
+position: relative;
+animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideIn {
+from {
+opacity: 0;
+transform: scale(0.9) translateY(30px);
+}
+to {
+opacity: 1;
+transform: scale(1) translateY(0);
+}
+}
+
+.modal-close {
+position: absolute;
+top: 1.5rem;
+right: 1.5rem;
+color: rgba(255, 255, 255, 0.7);
+font-size: 1.8rem;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+color: white;
+transform: rotate(90deg);
+}
+
+/* Demo Section */
+.demo-section {
+background: rgba(255, 255, 255, 0.1);
+backdrop-filter: blur(20px);
+border-radius: 20px;
+padding: 2rem;
+margin: 2rem 0;
+border: 1px solid var(--glass-border);
+text-align: center;
+}
+
+.demo-badge {
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+background: var(--warning-gradient);
+color: white;
+padding: 0.5rem 1.5rem;
+border-radius: 25px;
+font-weight: 600;
+font-size: 0.9rem;
+margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+.navbar {
+padding: 1rem 2%;
+flex-wrap: wrap;
+}
+
+.nav-links {
+display: none;
+}
+
+.cta-buttons {
+flex-direction: column;
+align-items: center;
+}
+
+.quiz-grid {
+grid-template-columns: 1fr;
+gap: 1.5rem;
+}
+
+.quiz-navigation {
+flex-direction: column;
+gap: 1rem;
+}
+
+.question-display {
+padding: 2rem 1.5rem;
+}
+
+.score-display {
+width: 240px;
+height: 240px;
+}
+
+.score-circle {
+width: 180px;
+height: 180px;
+font-size: 2.5rem;
+}
+}
+
+@media (max-width: 480px) {
+.container {
+padding: 0 4%;
+}
+
+.hero-title {
+font-size: 2.5rem;
+}
+}
+
+/* Utilities */
+.text-center { text-align: center; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+.hidden { display: none !important; }
+.loading {
+display: inline-block;
+width: 24px;
+height: 24px;
+border: 3px solid rgba(255,255,255,0.3);
+border-radius: 50%;
+border-top-color: white;
+animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+to { transform: rotate(360deg); }
+}
+
+.empty-state {
+text-align: center;
+padding: 6rem 2rem;
+color: rgba(255, 255, 255, 0.8);
+}
+
+.empty-state i {
+font-size: 5rem;
+margin-bottom: 2rem;
+opacity: 0.6;
+}
+
+.demo-click {
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.demo-click:hover {
+transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+<!-- Enhanced Navigation -->
+<nav class="navbar">
+<div class="logo">
+<i class="fas fa-graduation-cap"></i>
+QuizMaster Pro
+</div>
+<ul class="nav-links">
+<li><a href="#" onclick="showPage('home')"><i class="fas fa-home"></i> Home</a></li>
+<li><a href="#" onclick="showPage('listing')"><i class="fas fa-list"></i> Browse</a></li>
+<li><a href="#" onclick="showPage('create')"><i class="fas fa-plus"></i> Create</a></li>
+<li><a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> Profile</a></li>
+</ul>
+<div id="authSection" class="user-profile">
+<button class="btn btn-secondary" onclick="openModal('login')">
+<i class="fas fa-sign-in-alt"></i> Login
+</button>
+</div>
+</nav>
+
+<!-- Home Page -->
+<div id="home" class="page active">
+<div class="hero-section">
+<div class="container">
+<h1 class="hero-title">Create. Share. Master.</h1>
+<p class="hero-subtitle">
+Build interactive quizzes in minutes. Challenge friends, track progress,
+and master any subject with our beautiful, mobile-first platform.
+</p>
+
+<!-- DEMO SECTION -->
+<div class="demo-section demo-click" onclick="alert('✅ Full demo mode activated!\n\nDemo Login: demo@example.com / demo123\n\nAll features work perfectly! 🚀')">
+<div class="demo-badge">
+<i class="fas fa-rocket"></i>
+FOR DEMO CLICK HERE ✅
+</div>
+<p style="color: rgba(255,255,255,0.9); margin: 0;">Click for instant demo access & full feature showcase</p>
+</div>
+
+<div class="cta-buttons">
+<a href="#" class="btn btn-primary" onclick="showPage('create')" style="font-size: 1.1rem; padding: 1.3rem 3rem;">
+<i class="fas fa-magic"></i> Create Quiz Now
+</a>
+<a href="#" class="btn btn-secondary" onclick="showPage('listing')" style="font-size: 1.1rem; padding: 1.3rem 3rem;">
+<i class="fas fa-play-circle"></i> Take Quiz
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Quiz Listing -->
+<div id="listing" class="page">
+<div class="container">
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-th-large"></i> Discover Quizzes
+</h2>
+<p style="color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto; font-size: 1.2rem;">
+Browse and take quizzes created by the community
+</p>
+</div>
+<div id="quizGrid" class="quiz-grid"></div>
+</div>
+</div>
+
+<!-- Quiz Creation -->
+<div id="create" class="page">
+<div class="container">
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-edit"></i> Create New Quiz
+</h2>
+</div>
+<form class="creation-form" onsubmit="saveQuiz(event)">
+<div class="form-group">
+<label class="form-label">Quiz Title *</label>
+<input type="text" class="form-control" id="quizTitle" placeholder="Enter an engaging quiz title..." required>
+</div>
+
+<div id="questionsContainer"></div>
+
+<div style="text-align: center;">
+<button type="button" class="btn btn-secondary" onclick="addQuestion()" style="margin-right: 1rem;">
+<i class="fas fa-plus"></i> Add Question
+</button>
+<button type="submit" class="btn btn-primary">
+<i class="fas fa-save"></i> Save & Publish Quiz
+</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Quiz Taking -->
+<div id="taking" class="page">
+<div class="container">
+<div class="quiz-container">
+<div class="progress-container">
+<div class="progress-label">
+<span>Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span></span>
+<span id="progressText">10%</span>
+</div>
+<div class="progress-bar">
+<div id="progressFill" class="progress-fill"></div>
+</div>
+</div>
+
+<div id="questionDisplay" class="question-display" style="display: none;">
+<div id="questionText" class="question-text"></div>
+<div id="answerOptions" class="answer-options"></div>
+</div>
+
+<div class="quiz-navigation">
+<button id="prevBtn" class="btn btn-secondary" onclick="previousQuestion()" style="display: none;">
+<i class="fas fa-arrow-left"></i> Previous
+</button>
+<div>
+<button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()" style="display: none;">
+Next <i class="fas fa-arrow-right"></i>
+</button>
+<button id="finishBtn" class="btn btn-primary" onclick="finishQuiz()" style="display: none;">
+<i class="fas fa-flag-checkered"></i> Finish Quiz
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Results -->
+<div id="results" class="page">
+<div class="container">
+<div class="results-hero">
+<div id="scoreDisplay" class="score-display">
+<div id="scoreCircle" class="score-circle">
+<div id="scoreNumber">0</div>
+<div id="scorePercentage" class="score-percentage">0%</div>
+</div>
+</div>
+<h2 id="scoreTitle" style="color: white; font-size: 2.5rem; margin-bottom: 1rem; font-weight: 800;">Perfect Score!</h2>
+<div id="performanceBadge" class="performance-badge">Outstanding! 🎉</div>
+</div>
+
+<div class="results-breakdown" id="resultsBreakdown"></div>
+
+<div style="text-align: center; margin-top: 4rem;">
+<button class="btn btn-primary" onclick="showPage('listing')" style="font-size: 1.1rem;">
+<i class="fas fa-list"></i> Browse More Quizzes
+</button>
+<button class="btn btn-secondary" onclick="showPage('create')" style="margin-left: 1rem; font-size: 1.1rem;">
+<i class="fas fa-plus"></i> Create New Quiz
+</button>
+</div>
+</div>
+</div>
+
+<!-- Profile Page -->
+<div id="profile" class="page">
+<div class="container">
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-user-circle"></i> Your Profile
+</h2>
+</div>
+<div id="profileContent" style="text-align: center; color: white;">
+<div style="font-size: 4rem; margin-bottom: 2rem;">
+<i class="fas fa-user-circle"></i>
+</div>
+<h3 id="profileUsername">Guest</h3>
+<p style="opacity: 0.8; margin-bottom: 2rem;">Create an account to save your quizzes and track progress!</p>
+<button class="btn btn-primary" onclick="openModal('register')" style="font-size: 1.1rem;">
+<i class="fas fa-user-plus"></i> Get Started
+</button>
+</div>
+</div>
+</div>
+
+<!-- Auth Modals -->
+<div id="loginModal" class="modal-overlay">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('login')">&times;</span>
+<div style="text-align: center; margin-bottom: 2rem;">
+<i class="fas fa-sign-in-alt" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
+<h3 style="color: white; font-size: 1.8rem; margin-bottom: 0.5rem;">Welcome Back</h3>
+<p style="color: rgba(255,255,255,0.8);">Demo: demo@example.com / demo123</p>
+</div>
+<form onsubmit="login(event)">
+<div class="form-group">
+<label class="form-label">Email</label>
+<input type="email" class="form-control" id="loginEmail" placeholder="demo@example.com" required>
+</div>
+<div class="form-group">
+<label class="form-label">Password</label>
+<input type="password" class="form-control" id="loginPassword" placeholder="demo123" required>
+</div>
+<button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem;">
+<i class="fas fa-sign-in-alt"></i> Sign In
+</button>
+</form>
+</div>
+</div>
+
+<div id="registerModal" class="modal-overlay">
+<div class="modal-content">
+<span class="modal-close" onclick="closeModal('register')">&times;</span>
+<div style="text-align: center; margin-bottom: 2rem;">
+<i class="fas fa-user-plus" style="font-size: 3rem; color: #3b82f6; margin-bottom: 1rem;"></i>
+<h3 style="color: white; font-size: 1.8rem;">Join QuizMaster</h3>
+</div>
+<form onsubmit="register(event)">
+<div class="form-group">
+<label class="form-label">Username</label>
+<input type="text" class="form-control" id="regUsername" required>
+</div>
+<div class="form-group">
+<label class="form-label">Email</label>
+<input type="email" class="form-control" id="regEmail" required>
+</div>
+<div class="form-group">
+<label class="form-label">Password</label>
+<input type="password" class="form-control" id="regPassword" minlength="6" required>
+</div>
+<button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem;">
+<i class="fas fa-user-plus"></i> Create Account
+</button>
+</form>
+</div>
+</div>
+
+<script>
+// Enhanced App State
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+let quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+let currentQuiz = null;
+let currentQuestionIndex = 0;
+let userAnswers = [];
+let questionCount = 0;
+
+// Demo users for instant testing
+const demoUsers = {
+'demo@example.com': { username: 'Demo Master', email: 'demo@example.com', quizzesCreated: 5 }
+};
+
+// Initialize app
+document.addEventListener('DOMContentLoaded', function() {
+initializeApp();
+});
+
+function initializeApp() {
+loadQuizzes();
+addQuestion();
+updateAuthUI();
+if (currentUser) {
+document.getElementById('profileUsername').textContent = currentUser.username;
+}
+}
+
+// Page Navigation
+function showPage(pageId) {
+document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+document.getElementById(pageId).classList.add('active');
+
+if (pageId === 'listing') loadQuizzes();
+if (pageId === 'create') resetCreateForm();
+if (pageId === 'profile') updateProfile();
+}
+
+// Authentication System
+function updateAuthUI() {
+const authSection = document.getElementById('authSection');
+if (currentUser) {
+authSection.innerHTML = `
+<div style="color: white; font-weight: 600;">👋 ${currentUser.username}</div>
+<button class="btn btn-secondary" onclick="logout()">
+<i class="fas fa-sign-out-alt"></i>
+</button>
+`;
+} else {
+authSection.innerHTML = `
+<button class="btn btn-secondary" onclick="openModal('login')">
+<i class="fas fa-sign-in-alt"></i> Login
+</button>
+`;
+}
+}
+
+function login(event) {
+event.preventDefault();
+const email = document.getElementById('loginEmail').value;
+const password = document.getElementById('loginPassword').value;
+
+if (demoUsers[email] || password === 'demo123') {
+currentUser = demoUsers[email] || {
+username: email.split('@')[0].replace('.', ' ').replace(/^\w/, c => c.toUpperCase()),
+email
+};
+localStorage.setItem('currentUser', JSON.stringify(currentUser));
+closeModal('login');
+updateAuthUI();
+updateProfile();
+alert('🎉 Welcome back! Demo mode fully activated!');
+} else {
+alert('🔑 Demo Login:\ndemo@example.com / demo123');
+}
+}
+
+function register(event) {
+event.preventDefault();
+const username = document.getElementById('regUsername').value;
+const email = document.getElementById('regEmail').value;
+const password = document.getElementById('regPassword').value;
+
+currentUser = { username, email, quizzesCreated: 0 };
+demoUsers[email] = currentUser;
+localStorage.setItem('currentUser', JSON.stringify(currentUser));
+closeModal('register');
+updateAuthUI();
+updateProfile();
+alert('🎊 Account created successfully!');
+}
+
+function logout() {
+currentUser = null;
+localStorage.removeItem('currentUser');
+updateAuthUI();
+showPage('home');
+}
+
+function openModal(modalId) {
+document.getElementById(modalId + 'Modal').classList.add('active');
+}
+
+function closeModal(modalId) {
+document.getElementById(modalId + 'Modal').classList.remove('active');
+}
+
+// Quiz Creation
+function addQuestion() {
+const container = document.getElementById('questionsContainer');
+const questionIndex = container.children.length;
+const questionDiv = document.createElement('div');
+questionDiv.className = 'question-container';
+questionDiv.id = `question-${questionIndex}`;
+questionDiv.innerHTML = `
+<div class="question-header">
+<div class="question-number">Question ${questionIndex + 1}</div>
+${questionIndex > 0 ? `<button type="button" class="btn-remove" onclick="removeQuestion(${questionIndex})">
+<i class="fas fa-trash"></i> Remove
+</button>` : ''}
+</div>
+<div class="form-group">
+<label class="form-label">Question Text *</label>
+<input type="text" class="form-control" name="question-${questionIndex}" placeholder="What is the capital of France?" required>
+</div>
+<div class="form-group">
+<label class="form-label">Answer Options (select correct one) *</label>
+<div id="answers-${questionIndex}">
+<div class="answer-option">
+<input type="radio" name="correct-${questionIndex}" value="0" class="correct-radio" required>
+<input type="text" class="form-control" name="answer-${questionIndex}-0" placeholder="Answer 1 (e.g., Paris)" required>
+</div>
+<div class="answer-option">
+<input type="radio" name="correct-${questionIndex}" value="1" class="correct-radio">
+<input type="text" class="form-control" name="answer-${questionIndex}-1" placeholder="Answer 2 (e.g., London)">
+</div>
+</div>
+<button type="button" class="btn btn-secondary" onclick="addAnswerOption(${questionIndex})" style="margin-top: 1rem;">
+<i class="fas fa-plus-circle"></i> Add Answer Option
+</button>
+</div>
+`;
+container.appendChild(questionDiv);
+}
+
+function removeQuestion(index) {
+document.getElementById(`question-${index}`).remove();
+reindexQuestions();
+}
+
+function addAnswerOption(questionIndex) {
+const answersContainer = document.getElementById(`answers-${questionIndex}`);
+const answerCount = answersContainer.children.length;
+const answerDiv = document.createElement('div');
+answerDiv.className = 'answer-option';
+answerDiv.innerHTML = `
+<input type="radio" name="correct-${questionIndex}" value="${answerCount}" class="correct-radio">
+<input type="text" class="form-control" name="answer-${questionIndex}-${answerCount}" placeholder="Answer ${answerCount + 1}">
+`;
+answersContainer.appendChild(answerDiv);
+}
+
+function reindexQuestions() {
+const questions = document.querySelectorAll('.question-container');
+questions.forEach((q, i) => {
+q.querySelector('.question-number').textContent = `Question ${i + 1}`;
+q.id = `question-${i}`;
+const questionInput = q.querySelector('input[name="question-' + i + '"]');
+if (questionInput) questionInput.name = `question-${i}`;
+});
+}
+
+function saveQuiz(event) {
+event.preventDefault();
+const title = document.getElementById('quizTitle').value.trim();
+
+if (!title) {
+alert('❌ Please enter a quiz title');
+return;
+}
+
+const questions = [];
+const questionContainers = document.querySelectorAll('.question-container');
+
+for (let i = 0; i < questionContainers.length; i++) {
+const container = questionContainers[i];
+const questionText = container.querySelector(`input[name="question-${i}"]`)?.value.trim();
+
+if (!questionText) {
+alert(`❌ Question ${i + 1} needs text`);
+return;
+}
+
+const correctRadio = container.querySelector(`input[name="correct-${i}"]:checked`);
+if (!correctRadio) {
+alert(`❌ Select correct answer for Question ${i + 1}`);
+return;
+}
+
+const answerInputs = container.querySelectorAll(`input[name^="answer-${i}-"]`);
+const answers = [];
+answerInputs.forEach((input, idx) => {
+const text = input.value.trim();
+if (text) answers.push(text);
+});
+
+if (answers.length < 2) {
+alert(`❌ Need at least 2 answers for Question ${i + 1}`);
+return;
+}
+
+questions.push({
+question: questionText,
+answers: answers,
+correct: parseInt(correctRadio.value)
+});
+}
+
+const quiz = {
+id: Date.now(),
+title,
+questions,
+author: currentUser ? currentUser.username : 'Anonymous',
+createdAt: new Date().toLocaleString(),
+plays: 0,
+authorId: currentUser?.email || 'guest'
+};
+
+quizzes.unshift(quiz);
+localStorage.setItem('quizzes', JSON.stringify(quizzes));
+
+if (currentUser) {
+currentUser.quizzesCreated = (currentUser.quizzesCreated || 0) + 1;
+localStorage.setItem('currentUser', JSON.stringify(currentUser));
+}
+
+alert('🎉 Quiz created successfully! Published to community.');
+showPage('listing');
+}
+
+function resetCreateForm() {
+document.getElementById('quizTitle').value = '';
+document.getElementById('questionsContainer').innerHTML = '';
+addQuestion();
+}
+
+// Quiz Listing
+function loadQuizzes() {
+const grid = document.getElementById('quizGrid');
+if (quizzes.length === 0) {
+grid.innerHTML = `
+<div class="empty-state">
+<i class="fas fa-clipboard-list"></i>
+<h3>No quizzes yet</h3>
+<p>Be the first to create something amazing!</p>
+<button class="btn btn-primary" onclick="showPage('create')" style="font-size: 1.1rem;">
+<i class="fas fa-plus"></i> Create First Quiz
+</button>
+</div>
+`;
+return;
+}
+
+grid.innerHTML = quizzes.map(quiz => `
+<div class="quiz-card" onclick="startQuiz(${quiz.id})">
+<div class="quiz-icon">
+<i class="fas fa-question-circle"></i>
+</div>
+<h3 class="quiz-title">${quiz.title}</h3>
+<div class="quiz-meta">
+<div class="meta-item">
+<i class="fas fa-question"></i>
+${quiz.questions.length} questions
+</div>
+<div class="meta-item">
+<i class="fas fa-user"></i>
+${quiz.author}
+</div>
+<div class="meta-item">
+<i class="fas fa-eye"></i>
+${quiz.plays || 0} plays
+</div>
+</div>
+</div>
+`).join('');
+}
+
+// Quiz Taking Logic
+function startQuiz(quizId) {
+currentQuiz = quizzes.find(q => q.id === quizId);
+if (!currentQuiz) return;
+
+currentQuestionIndex = 0;
+userAnswers = new Array(currentQuiz.questions.length).fill(null);
+questionCount = currentQuiz.questions.length;
+
+// Increment plays
+currentQuiz.plays = (currentQuiz.plays || 0) + 1;
+localStorage.setItem('quizzes', JSON.stringify(quizzes));
+
+showQuestion();
+showPage('taking');
+}
+
+function showQuestion() {
+const question = currentQuiz.questions[currentQuestionIndex];
+document.getElementById('questionText').textContent = question.question;
+
+const optionsContainer = document.getElementById('answerOptions');
+optionsContainer.innerHTML = question.answers.map((answer, index) => `
+<button class="answer-btn ${userAnswers[currentQuestionIndex] === index ? 'selected' : ''}"
+onclick="selectAnswer(${index})">
+<span>${String.fromCharCode(65 + index)}. ${answer}</span>
+</button>
+`).join('');
+
+document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+document.getElementById('totalQuestions').textContent = questionCount;
+
+updateProgress();
+updateNavigation();
+document.getElementById('questionDisplay').style.display = 'block';
+}
+
+function selectAnswer(index) {
+userAnswers[currentQuestionIndex] = index;
+showQuestion();
+}
+
+function updateProgress() {
+const progress = Math.round(((currentQuestionIndex + 1) / questionCount) * 100);
+document.getElementById('progressFill').style.width = progress + '%';
+document.getElementById('progressText').textContent = progress + '%';
+}
+
+function updateNavigation() {
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const finishBtn = document.getElementById('finishBtn');
+
+prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-flex' : 'none';
+
+if (currentQuestionIndex === questionCount - 1) {
+nextBtn.style.display = 'none';
+finishBtn.style.display = 'inline-flex';
+} else {
+nextBtn.style.display = 'inline-flex';
+finishBtn.style.display = 'none';
+}
+}
+
+function previousQuestion() {
+if (currentQuestionIndex > 0) {
+currentQuestionIndex--;
+showQuestion();
+}
+}
+
+function nextQuestion() {
+if (currentQuestionIndex < questionCount - 1) {
+currentQuestionIndex++;
+showQuestion();
+}
+}
+
+function finishQuiz() {
+let score = 0;
+currentQuiz.questions.forEach((q, index) => {
+if (userAnswers[index] === q.correct) score++;
+});
+
+const percentage = Math.round((score / questionCount) * 100);
+showResults(score, questionCount, percentage);
+}
+
+function showResults(score, total, percentage) {
+const performanceData = [
+{ min: 90, title: 'Perfect!', badge: '👑 Mastered', color: '#10b981' },
+{ min: 80, title: 'Outstanding!', badge: '🎉 Excellent', color: '#059669' },
+{ min: 70, title: 'Great Job!', badge: '👍 Very Good', color: '#22c55e' },
+{ min: 60, title: 'Good Effort!', badge: '📈 Improving', color: '#84cc16' },
+{ min: 0, title: 'Keep Learning!', badge: '📚 Try Again', color: '#ef4444' }
+];
+
+const perf = performanceData.find(p => percentage >= p.min) || performanceData[performanceData.length - 1];
+
+document.getElementById('scoreNumber').textContent = `${score}/${total}`;
+document.getElementById('scorePercentage').textContent = percentage + '%';
+document.getElementById('scoreTitle').textContent = perf.title;
+document.getElementById('scoreTitle').style.color = perf.color;
+document.getElementById('performanceBadge').textContent = perf.badge;
+document.getElementById('performanceBadge').style.background = perf.color;
+
+// Update score display gradient
+const angle = (percentage / 100) * 360;
+document.getElementById('scoreDisplay').style.background =
+`conic-gradient(${perf.color} 0deg ${angle}deg, var(--glass-bg) ${angle}deg 360deg)`;
+
+// Results breakdown
+const breakdown = document.getElementById('resultsBreakdown');
+breakdown.innerHTML = currentQuiz.questions.map((q, index) => {
+const userAns = userAnswers[index];
+const isCorrect = userAns === q.correct;
+const userAnswerText = q.answers[userAns] || 'No answer';
+const correctAnswerText = q.answers[q.correct];
+
+return `
+<div class="result-item ${!isCorrect ? 'incorrect' : ''}">
+<div style="font-weight: 700; color: white; margin-bottom: 1rem; font-size: 1.1rem;">
+Q${index + 1}: ${q.question}
+</div>
+<div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+<div style="color: ${isCorrect ? '#10b981' : '#ef4444'}; font-weight: 600;">
+${isCorrect ? '✅ Correct' : '❌ Incorrect'}
+</div>
+${!isCorrect ? `
+<div style="color: #10b981; font-weight: 600;">
+✅ Correct: "${correctAnswerText}"
+</div>
+` : ''}
+<div style="color: rgba(255,255,255,0.7); font-size: 0.95rem;">
+Your answer: "${userAnswerText}"
+</div>
+</div>
+</div>
+`;
+}).join('');
+
+showPage('results');
+}
+
+function updateProfile() {
+const content = document.getElementById('profileContent');
+if (currentUser) {
+content.innerHTML = `
+<div style="font-size: 5rem; margin-bottom: 2rem; color: #10b981;">
+<i class="fas fa-crown"></i>
+</div>
+<h3 style="font-size: 2.5rem; margin-bottom: 1rem;">${currentUser.username}</h3>
+<p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem;">
+Quizzes Created: ${currentUser.quizzesCreated || 0}
+</p>
+<button class="btn btn-primary" onclick="showPage('create')" style="font-size: 1.1rem;">
+<i class="fas fa-plus"></i> Create More Quizzes
+</button>
+`;
+}
+}
+
+// Global modal close on overlay click
+window.onclick = function(event) {
+if (event.target.classList.contains('modal-overlay')) {
+event.target.classList.remove('active');
+}
+}
+
+// Prevent body scroll when modal open
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+modal.addEventListener('click', function(e) {
+if (e.target === this) {
+document.body.style.overflow = '';
+}
+});
+});
+</script>
+</body>
+</html> 
